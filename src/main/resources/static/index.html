@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Visualizer Web App</title>
+    <!-- Modern Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- p5.js and p5.sound.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="ui-container">
+        <h1>V I S U A L I Z E R</h1>
+        <p class="subtitle">Enter a YouTube Video ID to stream and visualize the audio.</p>
+        
+        <div class="input-group">
+            <input type="text" id="videoIdInput" placeholder="e.g. dQw4w9WgXcQ" autocomplete="off" />
+            <button id="playBtn">LOAD & PLAY</button>
+        </div>
+
+        <div id="statusMessage"></div>
+    </div>
+
+    <!-- p5.js sketch gets added to the body -->
+    <script src="sketch.js"></script>
+</body>
+</html>
