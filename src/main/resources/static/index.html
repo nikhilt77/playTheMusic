@@ -25,6 +25,18 @@
         <div id="statusMessage"></div>
     </div>
 
+    <!-- Sticky Player Dialog Box -->
+    <div id="player-dialog" class="hidden">
+        <div class="player-info">
+            <h3 id="songTitle">Loading Song...</h3>
+            <p id="songAuthor">Analyzing metadata</p>
+        </div>
+        <div class="player-controls">
+            <button id="togglePlayBtn" title="Play / Pause">⏸ PAUSE</button>
+            <button id="loadNewSongBtn" title="Load a new track">🔍 NEW SONG</button>
+        </div>
+    </div>
+
     <!-- p5.js sketch gets added to the body -->
     <script src="sketch.js"></script>
 </body>

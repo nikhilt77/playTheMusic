@@ -129,3 +129,72 @@ canvas {
     height: 100vh;
     z-index: 1;
 }
+
+/* Player Dialog */
+#player-dialog {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: rgba(20, 22, 32, 0.85);
+    padding: 20px 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    z-index: 20;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 320px;
+}
+
+#player-dialog.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+}
+
+.player-info h3 {
+    font-size: 1.1rem;
+    color: #fff;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+.player-info p {
+    font-size: 0.85rem;
+    color: #a0a5ba;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.player-controls button {
+    flex: 1;
+    padding: 10px;
+    font-size: 0.85rem;
+    border-radius: 8px;
+}
+
+#togglePlayBtn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#togglePlayBtn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}

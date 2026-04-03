@@ -3,12 +3,19 @@ let audioSound;
 let fft;
 let isPlaying = false;
 let bins = 256; // Defines number of frequency bands to analyze
-let smoothFactor = 0.8;
+let smoothFactor = 0.6; // Snappier smoothing for better sync
 
 const playBtn = document.getElementById('playBtn');
 const videoIdInput = document.getElementById('videoIdInput');
 const statusMessage = document.getElementById('statusMessage');
 const uiContainer = document.getElementById('ui-container');
+
+// Player Dialog Elements
+const playerDialog = document.getElementById('player-dialog');
+const togglePlayBtn = document.getElementById('togglePlayBtn');
+const loadNewSongBtn = document.getElementById('loadNewSongBtn');
+const songTitle = document.getElementById('songTitle');
+const songAuthor = document.getElementById('songAuthor');
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -71,11 +78,12 @@ function draw() {
         pop();
     }
 
-    // Central pulsing circle for bass
-    let pulseRadius = map(bass, 0, 255, 50, 180);
+    // Central pulsing circle for bass - using exponential mapping for punchier beats
+    let bassExp = pow(map(bass, 0, 255, 0, 1), 3);
+    let pulseRadius = 50 + (180 * bassExp);
     fill(330, 80, 100, 0.1);
     stroke((frameCount % 360), 80, 100);
-    strokeWeight(map(bass, 0, 255, 1, 5));
+    strokeWeight(map(bassExp, 0, 1, 1, 5));
     circle(0, 0, pulseRadius * 2);
 
     let innerPulseRadius = map(mid, 0, 255, 30, 120);
@@ -134,7 +142,7 @@ playBtn.addEventListener('click', async () => {
         }
 
         audioSound = loadSound(streamUrl, 
-            () => { // success callback
+            async () => { // success callback
                 setStatus("");
                 audioSound.play();
                 isPlaying = true;
@@ -142,8 +150,27 @@ playBtn.addEventListener('click', async () => {
                 // Hide UI gracefully
                 uiContainer.classList.add('hidden');
                 
-                // Make canvas clickable to show UI again
-                document.querySelector('canvas').addEventListener('click', toggleUI);
+                // Show player dialog
+                playerDialog.classList.remove('hidden');
+                togglePlayBtn.textContent = "⏸ PAUSE";
+                songTitle.textContent = "Loading Song...";
+                songAuthor.textContent = "Analyzing metadata";
+
+                // Fetch metadata internally from youtube
+                try {
+                    const infoRes = await fetch(`/api/info?videoId=${encodeURIComponent(videoId)}`);
+                    if (infoRes.ok) {
+                        const infoData = await infoRes.json();
+                        songTitle.textContent = infoData.title || "Unknown Title";
+                        songAuthor.textContent = infoData.author_name || "Unknown Artist";
+                    } else {
+                        songTitle.textContent = "Unknown Title";
+                        songAuthor.textContent = "Unknown Artist";
+                    }
+                } catch(e) {
+                    songTitle.textContent = "Unknown Title";
+                    songAuthor.textContent = "Unknown Artist";
+                }
             },
             (e) => { // error callback
                 playBtn.disabled = false;
@@ -159,13 +186,23 @@ playBtn.addEventListener('click', async () => {
     }
 });
 
-function toggleUI() {
-    if (uiContainer.classList.contains('hidden')) {
-        uiContainer.classList.remove('hidden');
-        playBtn.disabled = false;
-        playBtn.textContent = "LOAD & PLAY NEW";
+togglePlayBtn.addEventListener('click', () => {
+    if (audioSound && audioSound.isPlaying()) {
+        audioSound.pause();
+        isPlaying = false;
+        togglePlayBtn.textContent = "▶ PLAY";
+    } else if (audioSound) {
+        audioSound.play();
+        isPlaying = true;
+        togglePlayBtn.textContent = "⏸ PAUSE";
     }
-}
+});
+
+loadNewSongBtn.addEventListener('click', () => {
+    uiContainer.classList.remove('hidden');
+    playBtn.disabled = false;
+    playBtn.textContent = "LOAD & PLAY NEW";
+});
 
 function setStatus(msg, isLoading = false) {
     statusMessage.textContent = msg;
